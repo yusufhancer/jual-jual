@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Ada sesuatu yang mau aku tanyain... 💌</title>
+  
+  <!-- Google Fonts: Plus Jakarta Sans & Playfair Display -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,500;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
+          },
+          colors: {
+            rose: {
+              50: '#fff1f3',
+              100: '#ffe4e8',
+              200: '#fecdd6',
+              300: '#fda4b4',
+              400: '#fb718b',
+              500: '#f43f63',
+              600: '#e11d48',
+              700: '#be123c',
+              800: '#9f1239',
+              900: '#881337',
+            }
+          },
+          animation: {
+            'float-slow': 'float 7s ease-in-out infinite',
+            'float-reverse': 'floatReverse 8s ease-in-out infinite',
+            'pulse-subtle': 'pulseSubtle 2.5s ease-in-out infinite',
+            'bounce-subtle': 'bounceSubtle 3s ease-in-out infinite',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translate3d(0, 0, 0) rotate(0deg)' },
+              '50%': { transform: 'translate3d(0, -12px, 0) rotate(3deg)' },
+            },
+            floatReverse: {
+              '0%, 100%': { transform: 'translate3d(0, 0, 0) rotate(0deg)' },
+              '50%': { transform: 'translate3d(0, 10px, 0) rotate(-3deg)' },
+            },
+            pulseSubtle: {
+              '0%, 100%': { transform: 'scale3d(1, 1, 1)', opacity: '1' },
+              '50%': { transform: 'scale3d(1.04, 1.04, 1)', opacity: '0.94' },
+            },
+            bounceSubtle: {
+              '0%, 100%': { transform: 'translate3d(0, 0, 0)' },
+              '50%': { transform: 'translate3d(0, -5px, 0)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Selection highlight */
+    ::selection {
+      background-color: #fecdd6;
+      color: #9f1239;
+    }
+    
+    /* GPU Accelerated Screen Transitions */
+    .step-screen {
+      transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1), transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: transform, opacity;
+    }
+    
+    .step-screen.hidden-step {
+      display: none;
+      opacity: 0;
+      transform: translate3d(0, 14px, 0) scale(0.98);
+      pointer-events: none;
+    }
+
+    .step-screen.active-step {
+      display: flex;
+      opacity: 1;
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+
+    .step-screen.exiting-step {
+      display: flex;
+      opacity: 0;
+      transform: translate3d(0, -12px, 0) scale(0.98);
+      pointer-events: none;
+    }
+
+    /* Runaway Button GPU Accelerated Positioning */
+    #btnNo {
+      transition: transform 0.24s cubic-bezier(0.34, 1.56, 0.64, 1);
+      will-change: transform;
+    }
+
+    /* Respect reduced motion preference */
+    @media (prefers-reduced-motion: reduce) {
+      .step-screen, #btnNo, .animate-float-slow, .animate-float-reverse, .animate-pulse-subtle, .animate-bounce-subtle {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-gradient-to-tr from-rose-100/80 via-pink-50/70 to-amber-50/50 text-slate-700 min-h-dvh flex flex-col items-center justify-between p-4 sm:p-6 relative overflow-x-hidden select-none pt-[max(1rem,env(safe-area-inset-top))] pb-[max(1rem,env(safe-area-inset-bottom))]">
+
+  <!-- =========================================================================
+       BACKGROUND FLOATING AMBIENT ORBS & ROMANTIC ACCENTS
+       ========================================================================= -->
+  <div class="fixed inset-0 pointer-events-none overflow-hidden -z-10" aria-hidden="true">
+    <div class="absolute -top-20 -left-20 size-80 sm:size-96 bg-rose-200/40 rounded-full blur-3xl animate-float-slow"></div>
+    <div class="absolute top-1/2 -right-24 size-72 sm:size-80 bg-pink-200/40 rounded-full blur-3xl animate-float-reverse"></div>
+    <div class="absolute -bottom-16 left-1/4 size-80 sm:size-96 bg-amber-100/40 rounded-full blur-3xl animate-float-slow"></div>
+
+    <!-- Micro floating emojis -->
+    <span class="absolute top-[10%] left-[8%] text-2xl opacity-40 animate-float-slow">🌸</span>
+    <span class="absolute top-[18%] right-[10%] text-xl opacity-35 animate-float-reverse" style="animation-delay: 1.2s;">✨</span>
+    <span class="absolute bottom-[20%] left-[10%] text-2xl opacity-30 animate-float-reverse" style="animation-delay: 2s;">💖</span>
+    <span class="absolute bottom-[12%] right-[12%] text-xl opacity-40 animate-float-slow" style="animation-delay: 0.6s;">🌷</span>
+  </div>
+
+  <!-- =========================================================================
+       TOP HEADER & PROGRESS BAR
+       ========================================================================= -->
+  <header class="w-full max-w-md mx-auto mb-3 flex items-center justify-between px-2 h-10">
+    <div class="flex items-center gap-2">
+      <button id="btnBack" aria-label="Kembali ke halaman sebelumnya" class="hidden items-center justify-center size-8 rounded-full bg-white/80 border border-rose-100 text-rose-500 hover:bg-rose-50 active:scale-95 transition-all shadow-sm">
+        <i data-lucide="chevron-left" class="size-4"></i>
+      </button>
+
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center justify-center size-7 rounded-full bg-white/90 text-rose-500 text-xs font-bold border border-rose-100 shadow-sm">
+          💌
+        </span>
+        <span class="text-xs font-semibold text-rose-600/90 tracking-wide font-sans">A Secret Message</span>
+      </div>
+    </div>
+    
+    <!-- Step Dots -->
+    <div class="flex items-center gap-1.5" id="stepIndicators" aria-label="Progress langkah">
+      <span class="step-dot size-2 rounded-full bg-rose-500 w-5 transition-all duration-300"></span>
+      <span class="step-dot size-2 rounded-full bg-rose-200 transition-all duration-300"></span>
+      <span class="step-dot size-2 rounded-full bg-rose-200 transition-all duration-300"></span>
+      <span class="step-dot size-2 rounded-full bg-rose-200 transition-all duration-300"></span>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       MAIN APP CONTAINER (ELEVATED GLASS BENTO CARD)
+       ========================================================================= -->
+  <main class="w-full max-w-md mx-auto relative my-auto flex flex-col justify-center">
+
+    <!-- =======================================================================
+         SCREEN 1: THE INTRO / HERO
+         ======================================================================= -->
+    <section id="step-1" class="step-screen active-step flex-col items-center text-center bg-white/85 backdrop-blur-xl border border-white/90 rounded-[2rem] p-7 sm:p-9 shadow-2xl shadow-rose-200/30 ring-1 ring-rose-100/70">
+      
+      <!-- Animated Heart Envelope Avatar -->
+      <div class="relative mb-6">
+        <div class="size-20 rounded-full bg-gradient-to-tr from-rose-100 to-pink-50 flex items-center justify-center border-2 border-white shadow-md shadow-rose-200/40 animate-pulse-subtle">
+          <i data-lucide="mail-heart" class="size-10 text-rose-500 animate-bounce-subtle"></i>
+        </div>
+        <span class="absolute -top-1 -right-1 text-base">✨</span>
+      </div>
+
+      <span class="inline-flex items-center gap-1 px-3.5 py-1 rounded-full text-xs font-semibold bg-rose-50 text-rose-600 border border-rose-100 mb-3">
+        <span>Khusus untukmu</span> ✦
+      </span>
+
+      <h1 class="text-2xl sm:text-3xl font-serif font-bold text-slate-800 tracking-tight mb-3 text-balance">
+        Hai <span class="cfg-nama-dia text-rose-600 italic">[Nama Dia]</span>,
+      </h1>
+      
+      <p class="text-sm sm:text-base text-slate-600 leading-relaxed max-w-xs mb-8 text-pretty">
+        Ada sesuatu yang udah lama tersimpan di hati, dan hari ini aku mau tanyain langsung ke kamu...
+      </p>
+
+      <button id="btnStart" class="w-full group inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-full bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-semibold text-sm sm:text-base shadow-lg shadow-rose-500/25 hover:shadow-xl hover:shadow-rose-500/35 active:scale-[0.98] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-400 focus-visible:ring-offset-2">
+        <span>Buka Pesan Ini</span>
+        <i data-lucide="arrow-right" class="size-4 transition-transform group-hover:translate-x-1"></i>
+      </button>
+    </section>
+
+    <!-- =======================================================================
+         SCREEN 2: MEMORY LANE (CARDS / STORIES)
+         ======================================================================= -->
+    <section id="step-2" class="step-screen hidden-step flex-col bg-white/85 backdrop-blur-xl border border-white/90 rounded-[2rem] p-6 sm:p-8 shadow-2xl shadow-rose-200/30 ring-1 ring-rose-100/70">
+      
+      <div class="text-center mb-5">
+        <span class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-semibold bg-rose-50 text-rose-600 border border-rose-100 mb-2">
+          Memory Lane 📸
+        </span>
+        <h2 class="text-xl sm:text-2xl font-serif font-bold text-slate-800 text-balance">
+          Momen Berharga Kita
+        </h2>
+        <p class="text-xs sm:text-sm text-slate-500 mt-1 text-pretty">
+          Tiap detik bareng kamu rasanya selalu istimewa
+        </p>
+      </div>
+
+      <!-- Memory Cards Horizontal Stack -->
+      <div class="space-y-3 mb-6">
+        
+        <!-- Memory Card 1 -->
+        <div class="group flex items-center gap-3.5 p-3 rounded-2xl bg-gradient-to-r from-rose-50/50 via-white to-white border border-rose-100/80 hover:border-rose-200 transition-all duration-200 hover:shadow-md hover:shadow-rose-100/50">
+          <div class="size-16 rounded-xl overflow-hidden flex-shrink-0 bg-rose-100 border border-rose-200/60">
+            <img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=300&q=80" 
+                 alt="Momen Pertama" 
+                 loading="lazy"
+                 class="size-full object-cover group-hover:scale-105 transition-transform duration-300">
+          </div>
+          <div class="flex-1 min-w-0">
+            <span class="text-[10px] font-bold text-rose-600 uppercase tracking-wider">Awal Cerita</span>
+            <h3 class="text-sm font-bold text-slate-800 truncate">Obrolan Pertama Kita</h3>
+            <p class="text-xs text-slate-500 line-clamp-2 mt-0.5 leading-snug">Dari sapaan canggung sampai gak kerasa bisa ngobrol berjam-jam tiap hari.</p>
+          </div>
+        </div>
+
+        <!-- Memory Card 2 -->
+        <div class="group flex items-center gap-3.5 p-3 rounded-2xl bg-gradient-to-r from-pink-50/50 via-white to-white border border-rose-100/80 hover:border-rose-200 transition-all duration-200 hover:shadow-md hover:shadow-rose-100/50">
+          <div class="size-16 rounded-xl overflow-hidden flex-shrink-0 bg-rose-100 border border-rose-200/60">
+            <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=300&q=80" 
+                 alt="Senyum Manis" 
+                 loading="lazy"
+                 class="size-full object-cover group-hover:scale-105 transition-transform duration-300">
+          </div>
+          <div class="flex-1 min-w-0">
+            <span class="text-[10px] font-bold text-rose-600 uppercase tracking-wider">Tawa Lepas</span>
+            <h3 class="text-sm font-bold text-slate-800 truncate">Selalu Bikin Senyum</h3>
+            <p class="text-xs text-slate-500 line-clamp-2 mt-0.5 leading-snug">Hari seberat apa pun rasanya langsung reda tiap dengar ketawa kamu.</p>
+          </div>
+        </div>
+
+        <!-- Memory Card 3 -->
+        <div class="group flex items-center gap-3.5 p-3 rounded-2xl bg-gradient-to-r from-amber-50/40 via-white to-white border border-rose-100/80 hover:border-rose-200 transition-all duration-200 hover:shadow-md hover:shadow-rose-100/50">
+          <div class="size-16 rounded-xl overflow-hidden flex-shrink-0 bg-rose-100 border border-rose-200/60">
+            <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=300&q=80" 
+                 alt="Kenangan Manis" 
+                 loading="lazy"
+                 class="size-full object-cover group-hover:scale-105 transition-transform duration-300">
+          </div>
+          <div class="flex-1 min-w-0">
+            <span class="text-[10px] font-bold text-rose-600 uppercase tracking-wider">Hingga Sekarang</span>
+            <h3 class="text-sm font-bold text-slate-800 truncate">Tempat Paling Nyaman</h3>
+            <p class="text-xs text-slate-500 line-clamp-2 mt-0.5 leading-snug">Aku sadar, ada di dekatmu adalah hal terbaik yang pernah terjadi.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <button id="btnToStep3" class="w-full group inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-semibold text-sm shadow-md shadow-rose-500/25 hover:shadow-lg active:scale-[0.98] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-400 focus-visible:ring-offset-2">
+        <span>Lanjut Baca ✦</span>
+        <i data-lucide="arrow-right" class="size-4 transition-transform group-hover:translate-x-1"></i>
+      </button>
+    </section>
+
+    <!-- =======================================================================
+         SCREEN 3: A FEW THINGS I ADORE ABOUT YOU (REASONS WHY)
+         ======================================================================= -->
+    <section id="step-3" class="step-screen hidden-step flex-col bg-white/85 backdrop-blur-xl border border-white/90 rounded-[2rem] p-6 sm:p-8 shadow-2xl shadow-rose-200/30 ring-1 ring-rose-100/70">
+      
+      <div class="text-center mb-5">
+        <span class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-semibold bg-rose-50 text-rose-600 border border-rose-100 mb-2">
+          Reasons Why 🌸
+        </span>
+        <h2 class="text-xl sm:text-2xl font-serif font-bold text-slate-800 text-balance">
+          Hal yang Bikin Jatuh Hati
+        </h2>
+        <p class="text-xs sm:text-sm text-slate-500 mt-1 text-pretty">
+          Banyak hal sederhana dari kamu yang luar biasa buatku
+        </p>
+      </div>
+
+      <!-- 2x2 Bento Cards Grid with Harmonious Color Tokens -->
+      <div class="grid grid-cols-2 gap-3 mb-6">
+        
+        <div class="p-3.5 rounded-2xl bg-gradient-to-br from-rose-50/70 to-white border border-rose-100/80 text-left transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:shadow-rose-100/50">
+          <span class="text-2xl mb-1.5 block">✨</span>
+          <h3 class="text-xs sm:text-sm font-bold text-slate-800">Senyum Hangat</h3>
+          <p class="text-[11px] sm:text-xs text-slate-500 mt-1 leading-relaxed text-pretty">Punya sihir buat bikin duniaku langsung terasa tenang.</p>
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-gradient-to-br from-pink-50/70 to-white border border-rose-100/80 text-left transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:shadow-rose-100/50">
+          <span class="text-2xl mb-1.5 block">💖</span>
+          <h3 class="text-xs sm:text-sm font-bold text-slate-800">Hati yang Tulus</h3>
+          <p class="text-[11px] sm:text-xs text-slate-500 mt-1 leading-relaxed text-pretty">Selalu perhatian dan memperlakukan orang lain dengan baik.</p>
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-gradient-to-br from-amber-50/60 to-white border border-rose-100/80 text-left transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:shadow-rose-100/50">
+          <span class="text-2xl mb-1.5 block">🎧</span>
+          <h3 class="text-xs sm:text-sm font-bold text-slate-800">Obrolan Kita</h3>
+          <p class="text-[11px] sm:text-xs text-slate-500 mt-1 leading-relaxed text-pretty">Bisa ngomongin hal receh sampai impian masa depan tanpa bosan.</p>
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-gradient-to-br from-rose-50/70 to-white border border-rose-100/80 text-left transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:shadow-rose-100/50">
+          <span class="text-2xl mb-1.5 block">🌷</span>
+          <h3 class="text-xs sm:text-sm font-bold text-slate-800">Kehadiranmu</h3>
+          <p class="text-[11px] sm:text-xs text-slate-500 mt-1 leading-relaxed text-pretty">Hanya dengan kamu ada di situ, hari-hariku jadi jauh lebih indah.</p>
+        </div>
+
+      </div>
+
+      <button id="btnToStep4" class="w-full group inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-semibold text-sm shadow-md shadow-rose-500/25 hover:shadow-lg active:scale-[0.98] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-400 focus-visible:ring-offset-2">
+        <span>Pertanyaan Terakhir... 💌</span>
+        <i data-lucide="sparkles" class="size-4 transition-transform group-hover:rotate-12"></i>
+      </button>
+    </section>
+
+    <!-- =======================================================================
+         SCREEN 4: THE CONFESSION (CORE RUNAWAY INTERACTION)
+         ======================================================================= -->
+    <section id="step-4" class="step-screen hidden-step flex-col items-center text-center bg-white/85 backdrop-blur-xl border border-white/90 rounded-[2.5rem] p-7 sm:p-9 shadow-2xl shadow-rose-200/30 ring-1 ring-rose-100/70 relative">
+      
+      <!-- Pulsing Heart Emblem -->
+      <div class="size-20 rounded-full bg-gradient-to-tr from-rose-200 to-pink-100 flex items-center justify-center border-2 border-white shadow-lg shadow-rose-300/40 mb-4 animate-pulse-subtle">
+        <i data-lucide="heart" class="size-10 text-rose-500 fill-rose-500"></i>
+      </div>
+
+      <span class="inline-flex items-center gap-1 px-3.5 py-1 rounded-full text-xs font-semibold bg-rose-50 text-rose-600 border border-rose-200 mb-2">
+        <span>Dari Lubuk Hatiku</span> ✦
+      </span>
+
+      <h2 class="text-2xl sm:text-3xl font-serif font-bold text-slate-800 tracking-tight mb-2 text-balance">
+        Will You Be My Girlfriend?
+      </h2>
+
+      <p class="text-sm text-slate-600 leading-relaxed max-w-xs mb-8 text-pretty">
+        Mulai hari ini dan seterusnya, mau nggak temani aku dan jalan bareng sebagai pasangan? 🌹
+      </p>
+
+      <!-- Action Buttons Container -->
+      <div id="btnContainer" class="w-full flex items-center justify-center gap-4 relative min-h-[58px]">
+        
+        <!-- Button YES -->
+        <button id="btnYes" class="flex-1 max-w-[150px] inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-bold text-sm sm:text-base shadow-lg shadow-rose-500/35 hover:shadow-xl active:scale-[0.98] transition-all duration-200 animate-pulse-subtle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-400 focus-visible:ring-offset-2">
+          <span>Mau! ❤️</span>
+        </button>
+
+        <!-- Button NO (Smooth GPU Accelerated Runaway Button) -->
+        <button id="btnNo" class="flex-1 max-w-[150px] inline-flex items-center justify-center px-6 py-3.5 rounded-full bg-slate-100 text-slate-700 hover:text-slate-900 font-semibold text-sm border border-slate-200 shadow-sm active:scale-95 whitespace-nowrap focus-visible:outline-none">
+          <span id="noBtnText">Enggak 😜</span>
+        </button>
+
+      </div>
+
+      <p id="playfulHint" class="text-[11px] text-rose-500/90 mt-6 italic opacity-0 transition-opacity duration-300" aria-live="polite">
+        *psst, tombol "Enggak" agak pemalu dan gak mau diklik 🙈
+      </p>
+
+    </section>
+
+  </main>
+
+  <!-- =========================================================================
+       SCREEN 5: SUCCESS MODAL / CELEBRATION STATE
+       ========================================================================= -->
+  <div id="celebrationModal" 
+       role="dialog" 
+       aria-modal="true" 
+       aria-labelledby="modalTitle" 
+       class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300">
+    
+    <div class="w-full max-w-md bg-white/95 backdrop-blur-2xl border border-rose-100 rounded-[2.5rem] p-7 sm:p-9 text-center shadow-2xl shadow-rose-300/40 transform scale-95 transition-transform duration-300" id="modalCard">
+      
+      <!-- Big Celebration Avatar/Icon -->
+      <div class="relative size-24 mx-auto mb-5">
+        <div class="size-full rounded-full bg-gradient-to-tr from-rose-400 to-pink-500 flex items-center justify-center text-white shadow-xl shadow-rose-400/30 animate-pulse-subtle">
+          <i data-lucide="party-popper" class="size-12"></i>
+        </div>
+        <span class="absolute -top-1 -right-1 text-2xl animate-bounce-subtle">💖</span>
+        <span class="absolute -bottom-1 -left-1 text-xl animate-bounce-subtle" style="animation-delay: 0.5s;">✨</span>
+      </div>
+
+      <span class="inline-flex items-center gap-1 px-3.5 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-600 border border-rose-100 mb-3">
+        OFFICIALLY TOGETHER! 🥳
+      </span>
+
+      <h2 id="modalTitle" class="text-2xl sm:text-3xl font-serif font-bold text-slate-800 tracking-tight mb-2 text-balance">
+        Yayy! Makasih Udah Bilang Iya ❤️
+      </h2>
+
+      <p class="text-sm text-slate-600 leading-relaxed max-w-xs mx-auto mb-7 text-pretty">
+        Ini adalah hari paling membahagiakan buatku. Janji bakal selalu jaga dan bikin kamu tersenyum setiap hari!
+      </p>
+
+      <!-- Direct WhatsApp Action -->
+      <div class="space-y-3">
+        <a id="btnWhatsApp" href="#" target="_blank" rel="noopener noreferrer" 
+           class="w-full inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-full bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white font-bold text-sm sm:text-base shadow-lg shadow-emerald-500/25 hover:shadow-xl hover:shadow-emerald-500/35 active:scale-[0.98] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2">
+          <i data-lucide="message-circle" class="size-5 fill-white text-emerald-500"></i>
+          <span>Kabarin Aku di WhatsApp Ya! 💬</span>
+        </a>
+
+        <p class="text-[11px] text-slate-400 text-pretty">
+          *Pesan konfirmasi manis sudah disiapkan otomatis untuk dikirim ke WA
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer Watermark -->
+  <footer class="mt-4 text-center text-xs text-rose-500/70 font-medium">
+    <span>Made with 💖 for <span class="cfg-nama-dia font-semibold text-rose-600">[Nama Dia]</span></span>
+  </footer>
+
+  <!-- =========================================================================
+       CONFIGURATION & INTERACTIVE JAVASCRIPT
+       ========================================================================= -->
+  <script>
+    /**
+     * ========================================================================
+     * ⚙️ CONFIGURATION - GANTI DATA DI BAWAH INI DENGAN MUDAH
+     * ========================================================================
+     */
+    const CONFESSION_CONFIG = {
+      namaDia: "Clarissa", 
+      nomorWA: "6281234567890", 
+      pesanWA: "Aku udah klik YES! ❤️ Mau jalan bareng sekarang? 🌹"
+    };
+
+    // Initialize Lucide Icons
+    lucide.createIcons();
+
+    // Populate Dynamic Data from CONFIG
+    document.querySelectorAll('.cfg-nama-dia').forEach(el => {
+      el.textContent = CONFESSION_CONFIG.namaDia;
+    });
+
+    // Setup WhatsApp URL
+    const waLink = document.getElementById('btnWhatsApp');
+    if (waLink) {
+      const encodedMsg = encodeURIComponent(CONFESSION_CONFIG.pesanWA);
+      waLink.href = `https://wa.me/${CONFESSION_CONFIG.nomorWA}?text=${encodedMsg}`;
+    }
+
+    // Step Screen Management
+    let currentStep = 1;
+    const totalSteps = 4;
+    const screens = {
+      1: document.getElementById('step-1'),
+      2: document.getElementById('step-2'),
+      3: document.getElementById('step-3'),
+      4: document.getElementById('step-4'),
+    };
+    const stepDots = document.querySelectorAll('.step-dot');
+    const btnBack = document.getElementById('btnBack');
+
+    function updateDots(step) {
+      stepDots.forEach((dot, idx) => {
+        if (idx + 1 === step) {
+          dot.classList.remove('bg-rose-200');
+          dot.classList.add('bg-rose-500', 'w-5');
+        } else if (idx + 1 < step) {
+          dot.classList.remove('bg-rose-200', 'w-5');
+          dot.classList.add('bg-rose-300', 'w-2');
+        } else {
+          dot.classList.remove('bg-rose-500', 'bg-rose-300', 'w-5');
+          dot.classList.add('bg-rose-200', 'w-2');
+        }
+      });
+
+      // Toggle back button visibility
+      if (step > 1) {
+        btnBack.classList.remove('hidden');
+        btnBack.classList.add('inline-flex');
+      } else {
+        btnBack.classList.remove('inline-flex');
+        btnBack.classList.add('hidden');
+      }
+    }
+
+    function goToStep(nextStep) {
+      const currentEl = screens[currentStep];
+      const nextEl = screens[nextStep];
+      if (!currentEl || !nextEl || currentStep === nextStep) return;
+
+      currentEl.classList.add('exiting-step');
+      
+      setTimeout(() => {
+        currentEl.classList.remove('active-step', 'exiting-step');
+        currentEl.classList.add('hidden-step');
+
+        nextEl.classList.remove('hidden-step');
+        nextEl.classList.add('active-step');
+        currentStep = nextStep;
+        updateDots(nextStep);
+      }, 180);
+    }
+
+    // Navigation Button Handlers
+    document.getElementById('btnStart').addEventListener('click', () => goToStep(2));
+    document.getElementById('btnToStep3').addEventListener('click', () => goToStep(3));
+    document.getElementById('btnToStep4').addEventListener('click', () => goToStep(4));
+    
+    // Back Button Handler
+    btnBack.addEventListener('click', () => {
+      if (currentStep > 1) {
+        goToStep(currentStep - 1);
+      }
+    });
+
+    // =========================================================================
+    // 🏃 PLAYFUL RUNAWAY BUTTON LOGIC (GPU ACCELERATED WITH TRANSFORM)
+    // =========================================================================
+    const btnNo = document.getElementById('btnNo');
+    const noBtnText = document.getElementById('noBtnText');
+    const playfulHint = document.getElementById('playfulHint');
+    
+    const playfulPhrases = [
+      "Enggak 😜",
+      "Eits gak bisa 😝",
+      "Coba lagi deh 🏃",
+      "Yakin mau nolak? 🥺",
+      "Kabur dulu ah~ 💨",
+      "Gak boleh klik ini! 🙈",
+      "Pencet yang YES aja ❤️",
+      "Tombol ini pemalu 🏃💨"
+    ];
+    let dodgeCount = 0;
+
+    function runawayButton(e) {
+      if (e) e.preventDefault();
+
+      const btnRect = btnNo.getBoundingClientRect();
+      const parentRect = btnNo.parentElement.getBoundingClientRect();
+
+      // Safe bounds calculations
+      const padding = 20;
+      const minX = -btnRect.left + padding;
+      const maxX = window.innerWidth - btnRect.right - padding;
+      const minY = -btnRect.top + padding;
+      const maxY = window.innerHeight - btnRect.bottom - padding;
+
+      // Random displacement
+      let randomX = (Math.random() * (maxX - minX) + minX) * 0.6;
+      let randomY = (Math.random() * (maxY - minY) + minY) * 0.6;
+
+      // Ensure noticeable jump distance
+      if (Math.abs(randomX) < 40) randomX = randomX < 0 ? -60 : 60;
+      if (Math.abs(randomY) < 30) randomY = randomY < 0 ? -50 : 50;
+
+      // Apply GPU compositor transform
+      btnNo.style.transform = `translate3d(${randomX}px, ${randomY}px, 0) scale(0.96)`;
+      setTimeout(() => {
+        btnNo.style.transform = `translate3d(${randomX}px, ${randomY}px, 0) scale(1)`;
+      }, 120);
+
+      // Cycle phrases
+      dodgeCount++;
+      noBtnText.textContent = playfulPhrases[dodgeCount % playfulPhrases.length];
+
+      // Reveal playful hint after 2 dodges
+      if (dodgeCount >= 2 && playfulHint) {
+        playfulHint.classList.remove('opacity-0');
+        playfulHint.classList.add('opacity-100');
+      }
+    }
+
+    // Runaway on desktop hover, focus, & mobile touch
+    btnNo.addEventListener('mouseenter', runawayButton);
+    btnNo.addEventListener('touchstart', runawayButton, { passive: false });
+    btnNo.addEventListener('click', runawayButton);
+
+    // =========================================================================
+    // 🎉 YES BUTTON - CELEBRATION & MULTI-BURST CONFETTI
+    // =========================================================================
+    const btnYes = document.getElementById('btnYes');
+    const celebrationModal = document.getElementById('celebrationModal');
+    const modalCard = document.getElementById('modalCard');
+
+    btnYes.addEventListener('click', () => {
+      // 1. Trigger Multi-Stage Confetti Celebration
+      triggerCelebrationConfetti();
+
+      // 2. Open Success Celebration Modal
+      celebrationModal.classList.remove('opacity-0', 'pointer-events-none');
+      celebrationModal.classList.add('opacity-100', 'pointer-events-auto');
+
+      setTimeout(() => {
+        modalCard.classList.remove('scale-95');
+        modalCard.classList.add('scale-100');
+      }, 40);
+    });
+
+    // Close modal on Escape
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !celebrationModal.classList.contains('pointer-events-none')) {
+        celebrationModal.classList.add('opacity-0', 'pointer-events-none');
+        celebrationModal.classList.remove('opacity-100', 'pointer-events-auto');
+        modalCard.classList.add('scale-95');
+        modalCard.classList.remove('scale-100');
+      }
+    });
+
+    function triggerCelebrationConfetti() {
+      const duration = 3.2 * 1000;
+      const end = Date.now() + duration;
+
+      // Side cannons
+      (function frame() {
+        confetti({
+          particleCount: 4,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0, y: 0.7 },
+          colors: ['#f43f63', '#fda4b4', '#ffe4e8', '#ffffff', '#fbbf24']
+        });
+        confetti({
+          particleCount: 4,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1, y: 0.7 },
+          colors: ['#f43f63', '#fda4b4', '#ffe4e8', '#ffffff', '#fbbf24']
+        });
+
+        if (Date.now() < end) {
+          requestAnimationFrame(frame);
+        }
+      })();
+
+      // Heart burst
+      setTimeout(() => {
+        confetti({
+          particleCount: 75,
+          spread: 100,
+          origin: { y: 0.55 },
+          colors: ['#e11d48', '#f43f63', '#fda4b4', '#fecdd6']
+        });
+      }, 250);
+    }
+
+    // Initialize first dot indicator
+    updateDots(1);
+  </script>
+</body>
+</html>
